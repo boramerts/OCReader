@@ -68,8 +68,6 @@ def select_image():
     image_label.image = image
     root.geometry("{}x{}".format(dim[0]+100,dim[1]+100))
     
-
-
 # Create the main window
 root = tk.Tk()
 window_height = 100
@@ -81,19 +79,25 @@ screen_height = root.winfo_screenheight()
 x_cordinate = int((screen_width/2) - (window_width/2))
 y_cordinate = int((screen_height/2) - (window_height/2))
 
-#TODO: Resize window dynamically!!!
 root.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
 root.attributes("-topmost",True)
 root.title("OCReader")
 
-# Create the app name label
-app_name_label = tk.Label(root, text="Image Viewer", font=("Arial", 16))
+#TODO: * Improve the GUI!!!
+#      * Add comments
+
+label_frame = tk.Frame(root)
+label_frame.grid(row=0, column=0, padx=10, pady=5)
+
+app_name_label = tk.Label(label_frame, text="Image Viewer", font=("Arial", 16))
 app_name_label.pack(anchor='center')
 
 # Create the buttons frame
 buttons_frame = tk.Frame(root)
-buttons_frame.pack()
+buttons_frame.grid(row=1, column=0, padx=10, pady=5)
+image_frame = tk.Frame(root)
+image_frame.grid(row=1,column=1, padx=10, pady=5)
 
 # Create the Select Image button
 select_image_button = tk.Button(buttons_frame, text="Select Image", command=select_image)
@@ -104,7 +108,7 @@ exit_button = tk.Button(buttons_frame, text="Exit", command=lambda: root.quit())
 exit_button.pack(side=tk.LEFT,anchor='center')
 
 # Create the image label
-image_label = tk.Label(root)
+image_label = tk.Label(image_frame)
 image_label.pack(padx=10,anchor='center')
 
 # Start the main event loop
