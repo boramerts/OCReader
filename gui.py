@@ -35,7 +35,7 @@ def image_resize(image, width = None, height = None, inter = cv2.INTER_AREA):
     resized = cv2.resize(image, dim, interpolation = inter)
 
     # return the resized image
-    return resized
+    return resized, dim
 
 def apply_ocr(file_path):
     custom_config = r'--oem 3 --psm 1'
@@ -53,24 +53,27 @@ def apply_ocr(file_path):
         (x,y,w,h) = (ocr_output['left'][i],ocr_output['top'][i],ocr_output['width'][i],ocr_output['height'][i])
         cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),2)
     
-    image = image_resize(image, height=800)
+    image, dim = image_resize(image, height=800)
 
-    return image
+    return image, dim
 
 def select_image():
     # Open a file dialog to select an image file
     # TODO: Fix filetypes!!
     file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.png *.jpg *.jpeg")])
-    image = apply_ocr(file_path)
+    image, dim = apply_ocr(file_path)
     image = ImageTk.PhotoImage(Image.fromarray(image))
     image_label.configure(image=image)
+    image_label.configure(width=dim[0], height=dim[1])
     image_label.image = image
+    root.geometry("{}x{}".format(dim[0]+100,dim[1]+100))
+    
 
 
 # Create the main window
 root = tk.Tk()
-window_height = 900
-window_width = 700
+window_height = 100
+window_width = 400
 
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
@@ -86,7 +89,7 @@ root.title("OCReader")
 
 # Create the app name label
 app_name_label = tk.Label(root, text="Image Viewer", font=("Arial", 16))
-app_name_label.pack()
+app_name_label.pack(anchor='center')
 
 # Create the buttons frame
 buttons_frame = tk.Frame(root)
@@ -98,11 +101,11 @@ select_image_button.pack(side=tk.LEFT, padx=10)
 
 # Create the Exit button
 exit_button = tk.Button(buttons_frame, text="Exit", command=lambda: root.quit())
-exit_button.pack(side=tk.LEFT)
+exit_button.pack(side=tk.LEFT,anchor='center')
 
 # Create the image label
-image_label = tk.Label(root,width=600,height=800)
-image_label.pack(padx=10,anchor=tk.CENTER)
+image_label = tk.Label(root)
+image_label.pack(padx=10,anchor='center')
 
 # Start the main event loop
 root.mainloop()
